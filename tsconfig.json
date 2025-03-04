@@ -26,10 +26,11 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
+    "prisma/seed.ts",
     ".eslintrc.cjs",
     "next-env.d.ts",
     "**/*.ts",
