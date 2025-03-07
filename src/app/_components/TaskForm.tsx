@@ -27,7 +27,9 @@ import {
 
 import { Textarea } from "@/components/ui/textarea";
 import { cn, formatDate } from "@/lib/utils";
+import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Label, Tag } from "@prisma/client";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -37,10 +39,10 @@ const taskSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   deadline: z.date().min(new Date(), { message: "Deadline invalid" }),
-  priority: z.string().min(1, "Priority is required"),
-  label: z.string().min(1, "Label is required"),
+  priority: z.enum(["low", "medium", "high"]),
+  label: z.nativeEnum(Label),
   assignedTo: z.array(z.string()).min(1, "At least one team member is required"),
-  tags: z.array(z.string()).min(1, "At least one tag is required"),
+  tags: z.array(z.nativeEnum(Tag)).min(1, "At least one tag is required"),
 });
 
 type TaskFormData = z.infer<typeof taskSchema>;
@@ -52,15 +54,17 @@ const TaskForm: React.FC = () => {
       title: "",
       description: "",
       deadline: new Date(),
-      priority: "",
-      label: "",
+      priority: "low",
+      label: "FRONTEND",
       assignedTo: [],
       tags: [],
     },
   });
-
-  const onSubmit = (data: TaskFormData) => {
+  const { mutate: createTask } = api.task.create.useMutation();
+  const { data: users } = api.user.getAllUsers.useQuery();
+  const onSubmit = async (data: TaskFormData) => {
     console.log(data);
+    await createTask(data);
   };
 
   return (
@@ -159,9 +163,9 @@ const TaskForm: React.FC = () => {
                       <SelectValue placeholder="Priority" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Low">Low</SelectItem>
-                      <SelectItem value="Medium">Medium</SelectItem>
-                      <SelectItem value="High">High</SelectItem>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -183,11 +187,11 @@ const TaskForm: React.FC = () => {
                       <SelectValue placeholder="Label" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Frontend">Frontend</SelectItem>
-                      <SelectItem value="Backend">Backend</SelectItem>
-                      <SelectItem value="Design">Design</SelectItem>
-                      <SelectItem value="Documentation">Documentation</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
+                      <SelectItem value="FRONTEND">Frontend</SelectItem>
+                      <SelectItem value="BACKEND">Backend</SelectItem>
+                      <SelectItem value="DESIGN">Design</SelectItem>
+                      <SelectItem value="DOCUMENTATION">Documentation</SelectItem>
+                      <SelectItem value="OTHER">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -205,10 +209,10 @@ const TaskForm: React.FC = () => {
                 <FormControl>
                   <MultiSelect
                     options={[
-                      { label: "Urgent", value: "Urgent" },
-                      { label: "Feature", value: "Feature" },
-                      { label: "Bug", value: "Bug" },
-                      { label: "Test", value: "Test" },
+                      { label: "Urgent", value: "URGENT" },
+                      { label: "Feature", value: "FEATURE" },
+                      { label: "Bug", value: "BUG" },
+                      { label: "Test", value: "TEST" },
                     ]}
                     placeholder="Select tags"
                     maxCount={3}
@@ -229,12 +233,7 @@ const TaskForm: React.FC = () => {
                 <FormLabel>Assign to</FormLabel>
                 <FormControl>
                   <MultiSelect
-                    options={[
-                      { label: "Aman", value: "Aman" },
-                      { label: "Raj", value: "Raj" },
-                      { label: "Shivam", value: "Shivam" },
-                      { label: "Rohit", value: "Rohit" },
-                    ]}
+                    options={users?.map((user) => ({ label: user.name as string, value: user.id })) || []}
                     placeholder="Select team member"
                     value={field.value}
                     onValueChange={field.onChange}

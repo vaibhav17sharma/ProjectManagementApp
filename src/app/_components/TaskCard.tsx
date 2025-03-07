@@ -7,19 +7,18 @@ import { cn } from "@/lib/utils";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ColumnStatus, User } from "@prisma/client";
 import { cva } from "class-variance-authority";
 import { GripVertical } from "lucide-react";
-import { ColumnId } from "./KanbanBoard";
-
 export interface Task {
   id: UniqueIdentifier;
   title: string;
-  columnId: ColumnId;
+  column: ColumnStatus;
   description: string;
   deadline: Date;
   priority: string;
   label: string;
-  assignedTo: string[];
+  assignedTo: User[];
   tags: string[];
 }
 
@@ -102,10 +101,10 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
           <span className="text-sm text-gray-500">{task.description}</span>
           <span className="flex gap-1">
             {task.assignedTo.map((assignee) => (
-              <Avatar key={assignee}>
+              <Avatar key={assignee.id}>
                 <AvatarFallback>
-                  {assignee.charAt(0)}
-                  {assignee.split(" ")[1]?.charAt(0)}
+                  {assignee.name?.charAt(0)}
+                  {assignee.name?.charAt(1)}
                 </AvatarFallback>
               </Avatar>
             ))}
