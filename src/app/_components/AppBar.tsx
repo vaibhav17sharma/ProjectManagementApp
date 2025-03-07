@@ -10,11 +10,14 @@ import { Menu, Package2 } from "lucide-react";
 
 import { auth } from "@/server/auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import UserAction from "./UserAction";
 
 export const Appbar = async () => {
   const session = await auth();
-
+  if (!session) {
+    redirect("/");
+  }
   return (
     <>
       <header className="z-10 sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">

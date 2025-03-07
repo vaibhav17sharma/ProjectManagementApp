@@ -10,10 +10,10 @@ const config = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'cdn.discordapp.com',
+                hostname: 'i.pravatar.cc',
                 port: '',
-                pathname: '/avatars/**',
-            },
+                pathname: '/**',
+            }
         ],
     },
 };
