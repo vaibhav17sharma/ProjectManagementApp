@@ -14,7 +14,12 @@ export default {
         environment: {
           DATABASE_URL: process.env.DATABASE_URL!,
           AUTH_SECRET: process.env.AUTH_SECRET!,
+        }, 
+        customDomain: {
+          domainName: "taskmanagement.vaibdev.com",
+          domainAlias: "www.taskmanagement.vaibdev.com",
         },
+        timeout: 30,
       });
 
       stack.addOutputs({
