@@ -9,9 +9,9 @@ export default function ProfilePage() {
     <div className="flex items-center justify-center">
       <div className="w-full max-w-7xl p-6 bg-white rounded-lg">
         <ProfileCard
-          initialName={session?.user?.name || ""}
-          initialEmail={session?.user?.email || ""}
-          initialImage={session?.user?.image || ""}
+          initialName={session?.user?.name ?? ""}
+          initialEmail={session?.user?.email ?? ""}
+          initialImage={session?.user?.image ?? ""}
         />
       </div>
     </div>

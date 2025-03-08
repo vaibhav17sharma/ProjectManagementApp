@@ -4,13 +4,13 @@ import { createPortal } from "react-dom";
 
 import { api } from "@/trpc/react";
 import {
-  Announcements,
+  type Announcements,
   DndContext,
   type DragEndEvent,
   type DragOverEvent,
   DragOverlay,
   type DragStartEvent,
-  UniqueIdentifier,
+  type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { ColumnStatus } from "@prisma/client";
@@ -45,7 +45,7 @@ export function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    setTasks(initialTasks || []);
+    setTasks(initialTasks ?? []);
   }, [initialTasks]);
 
   const { mutate: updateColumn } = api.task.updateColumn.useMutation();
@@ -68,7 +68,7 @@ export function KanbanBoard() {
     taskUpdateMap.forEach((columnId, taskId) => {
       updateColumn({ id: taskId as string, column: columnId });
     });
-  }, [taskUpdateMap]);
+  }, [taskUpdateMap, updateColumn]);
 
   function getDraggingTaskData(taskId: UniqueIdentifier, columnId: ColumnId) {
     const tasksInColumn = tasks.filter((task) => task.column === columnId);
@@ -94,7 +94,7 @@ export function KanbanBoard() {
         pickedUpTaskColumn.current = active.data.current.task.column;
         const { tasksInColumn, taskPosition, column } = getDraggingTaskData(
           active.id,
-          pickedUpTaskColumn.current as ColumnId,
+          pickedUpTaskColumn.current,
         );
         return `Picked up Task ${
           active.data.current.task.description

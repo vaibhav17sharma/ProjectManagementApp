@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 import { useState } from "react";
 
 type ProfileCardProps = {
@@ -76,10 +77,12 @@ const ProfileCard = ({ initialName, initialEmail, initialImage }: ProfileCardPro
     <div className=" grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
       {/* Left Section: Profile Image */}
       <div className="flex flex-col items-center justify-center space-y-4">
-        <img
+        <Image
           src={image}
           alt="Profile Picture"
           className="rounded-full w-40 h-40 object-cover shadow-lg"
+          width={160}
+          height={160}
         />
         <Input className="w-[300px]" type="string" value={image} onChange={handleImageChange} />
         <Button onClick={updateImageChange}>Change Image</Button>

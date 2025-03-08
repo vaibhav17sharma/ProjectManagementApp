@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical } from "lucide-react";
 import { useMemo } from "react";
-import { Task, TaskCard } from "./TaskCard";
+import { TaskCard, type Task } from "./TaskCard";
 
 export interface Column {
   id: UniqueIdentifier;

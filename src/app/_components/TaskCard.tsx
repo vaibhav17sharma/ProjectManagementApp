@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { UniqueIdentifier } from "@dnd-kit/core";
+import { type UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ColumnStatus, User } from "@prisma/client";
+import { type ColumnStatus, type User } from "@prisma/client";
 import { cva } from "class-variance-authority";
 import { GripVertical } from "lucide-react";
 export interface Task {

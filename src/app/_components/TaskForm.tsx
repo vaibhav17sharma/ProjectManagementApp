@@ -63,8 +63,7 @@ const TaskForm: React.FC = () => {
   const { mutate: createTask } = api.task.create.useMutation();
   const { data: users } = api.user.getAllUsers.useQuery();
   const onSubmit = async (data: TaskFormData) => {
-    console.log(data);
-    await createTask(data);
+    createTask(data);
   };
 
   return (
@@ -233,7 +232,7 @@ const TaskForm: React.FC = () => {
                 <FormLabel>Assign to</FormLabel>
                 <FormControl>
                   <MultiSelect
-                    options={users?.map((user) => ({ label: user.name as string, value: user.id })) || []}
+                    options={users?.map((user) => ({ label: user.name ?? '', value: user.id })) ?? []}
                     placeholder="Select team member"
                     value={field.value}
                     onValueChange={field.onChange}

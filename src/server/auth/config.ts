@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
-import { JWTPayload, SignJWT, importJWK } from "jose";
-import { NextAuthConfig } from "next-auth";
-import { JWT } from 'next-auth/jwt';
+import { type JWTPayload, SignJWT, importJWK } from "jose";
+import { type NextAuthConfig } from "next-auth";
+import { type JWT } from 'next-auth/jwt';
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
@@ -68,7 +68,7 @@ export const authConfig: NextAuthConfig = {
             select: { password: true, id: true, name: true, role: true, email: true, image: true },
           });
 
-          if (userDb && userDb.password) {
+          if (userDb?.password) {
             const valid = await bcrypt.compare(credentials.password as string, userDb.password);
             if (!valid) return null;
 
@@ -92,10 +92,10 @@ export const authConfig: NextAuthConfig = {
             return {
               id: userDb.id,
               name: userDb.name,
-              role: userDb.role || 'EMPLOYEE',
+              role: userDb.role ?? 'EMPLOYEE',
               email: userDb.email,
               token: jwt,
-              image: userDb.image as string,
+              image: userDb.image ?? '',
             };
           }
         } catch (e) {
@@ -113,8 +113,8 @@ export const authConfig: NextAuthConfig = {
           ...session.user,
           id: (token as Token).uid,
           email: session.user?.email,
-          name: session.user?.name as string,
-          image: session.user?.image as string,
+          name: session.user?.name ?? '',
+          image: session.user?.image ?? '',
           jwtToken: (token as Token).jwtToken,
           role: process.env.ADMINS?.split(',').includes(session.user?.email ?? '') ? 'ADMIN' : 'EMPLOYEE',
         };
@@ -124,7 +124,7 @@ export const authConfig: NextAuthConfig = {
     },
     async jwt({ token, user }) {
       if (user) {
-        (token as Token).uid = user.id as string;
+        (token as Token).uid = user.id ?? '';
         (token as Token).jwtToken = (user as User).token;
       }
       return token;
