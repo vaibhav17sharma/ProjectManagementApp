@@ -126,7 +126,7 @@ export const authConfig: NextAuthConfig = {
       if (user) {
         (token as Token).uid = user.id ?? '';
         (token as Token).jwtToken = (user as User).token;
-        (token as Token).role = user.role;
+        (token as Token).role = (user as User).role;
       }
       return token;
     },
