@@ -5,12 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
-  // const hello = await api.post.hello({ text: "from tRPC" });
   const session = await auth();
-
-  // if (session?.user) {
-  //   void api.post.getLatest.prefetch();
-  // }
 
   return (
     <HydrateClient>
@@ -44,7 +39,6 @@ export default async function Home() {
           </Button>
           </div>
         </div>
-          <pre>{JSON.stringify(session, null, 2)}</pre>  
       </main>
     </HydrateClient>
   );

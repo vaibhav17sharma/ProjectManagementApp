@@ -81,17 +81,18 @@ export const taskRouter = createTRPCRouter({
     assignedTo: z.array(z.string()),
   })).mutation(async ({ ctx, input }) => {
     return ctx.db.task.update({
-      where: { id: input.id, createdBy: { id: ctx.session.user.id   } },
+      where: { id: input.id },
       data: {
         title: input.title,
         description: input.description,
         deadline: input.deadline,
         priority: input.priority,
         label: input.label,
-        column: input.column,
-        tags: input.tags,
+        tags: {
+          set: input.tags,
+        },
         assignedTo: { connect: input.assignedTo.map((id) => ({ id })) },
-        createdBy: { connect: { id: ctx.session.user.id } },
+        updatedAt: new Date(),
       },
     });
   }),

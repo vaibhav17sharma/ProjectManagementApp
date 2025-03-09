@@ -89,6 +89,7 @@ model User {
   token         String?
   role          UserRole  @default(EMPLOYEE)
   image         String?
+  isActive      Boolean   @default(true)
   accounts      Account[]
   sessions      Session[]
   tasks         Task[]    @relation("UserTasksAssigned") // Tasks assigned to the user (many-to-many relation)

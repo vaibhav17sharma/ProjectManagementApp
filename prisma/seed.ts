@@ -9,13 +9,13 @@ async function main() {
       name: 'Vaibhav',
       image: 'https://i.pravatar.cc/150?img=1',
       password: '$2a$10$0nBVGOQB4kaCH/F9VMqfeuwih5A4gQKJic8xD3mkTCHiTxdw1J0J6',
-      role: UserRole.ADMIN,
+      role: UserRole.EMPLOYEE,
     },
   });
   const user2 = await prisma.user.create({
     data: {
-      email: 'admin@yopmail.com',
-      name: 'Admin',
+      email: 'superadmin@yopmail.com',
+      name: 'Super Admin',
       image: 'https://i.pravatar.cc/150?img=2',
       password: '$2a$10$0nBVGOQB4kaCH/F9VMqfeuwih5A4gQKJic8xD3mkTCHiTxdw1J0J6',
       role: UserRole.ADMIN,

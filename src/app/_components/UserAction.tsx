@@ -39,7 +39,9 @@ export default function UserAction({
             <DropdownMenuItem>
               <Link href={"/profile"}>Profile</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/setting"}>Setting</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <button onClick={() => signOut()}>Logout</button>

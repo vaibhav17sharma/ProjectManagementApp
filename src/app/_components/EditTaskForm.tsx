@@ -2,27 +2,27 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/components/ui/popover";
 
 import { Textarea } from "@/components/ui/textarea";
@@ -33,7 +33,7 @@ import { Label, Tag } from "@prisma/client";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import { Task } from "./TaskCard";
 // Define Zod schema for form validation
 const taskSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -47,26 +47,32 @@ const taskSchema = z.object({
 
 type TaskFormData = z.infer<typeof taskSchema>;
 
-const TaskForm: React.FC<{ open: boolean; setOpen: (open: boolean) => void }> = ({ open, setOpen }) => {
+const EditTaskForm: React.FC<{
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  task: Task;
+}> = ({ open, setOpen, task }) => {
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      deadline: new Date(),
-      priority: "low",
-      label: "FRONTEND",
-      assignedTo: [],
-      tags: [],
+      title: task.title,
+      description: task.description,
+      deadline: task.deadline,
+      priority: task.priority.toLowerCase() as "low" | "medium" | "high",
+      label: task.label as "FRONTEND" | "BACKEND" | "DESIGN" | "DOCUMENTATION" | "OTHER",
+      assignedTo: task.assignedTo.map((user) => user.id),
+      tags: task.tags as Tag[],
     },
   });
-  const { mutate: createTask } = api.task.create.useMutation();
+
+  const { mutate: updateTask } = api.task.update.useMutation();
   const { data: users } = api.user.getAllEmployees.useQuery();
+
   const onSubmit = async (data: TaskFormData) => {
-    createTask(data);
+    console.log(data);
+    updateTask({ id: task.id.toString(), ...data, column: task.column });
     setOpen(false);
   };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -125,11 +131,7 @@ const TaskForm: React.FC<{ open: boolean; setOpen: (open: boolean) => void }> = 
                           !field.value && "text-muted-foreground", "py-2"
                         )}
                       >
-                        {field.value ? (
-                          formatDate(field.value)
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
+                        {field.value ? formatDate(field.value) : <span>Pick a date</span>}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </PopoverTrigger>
@@ -174,6 +176,7 @@ const TaskForm: React.FC<{ open: boolean; setOpen: (open: boolean) => void }> = 
             )}
           />
         </div>
+
         <div className="grid gap-4 md:grid-cols-2">
           <FormField
             name="label"
@@ -217,6 +220,7 @@ const TaskForm: React.FC<{ open: boolean; setOpen: (open: boolean) => void }> = 
                     placeholder="Select tags"
                     maxCount={3}
                     value={field.value}
+                    defaultValue={field.value}
                     onValueChange={field.onChange}
                   />
                 </FormControl>
@@ -225,30 +229,33 @@ const TaskForm: React.FC<{ open: boolean; setOpen: (open: boolean) => void }> = 
             )}
           />
         </div>
+
         <FormField
-            name="assignedTo"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Assign to</FormLabel>
-                <FormControl>
-                  <MultiSelect
-                    options={users?.map((user) => ({ label: user.name ?? '', value: user.id })) ?? []}
-                    placeholder="Select team member"
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          name="assignedTo"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Assign to</FormLabel>
+              <FormControl>
+                <MultiSelect
+                  options={users?.map((user) => ({ label: user.name ?? '', value: user.id })) ?? []}
+                  placeholder="Select team member"
+                  defaultValue={field.value}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit" className="mt-4">
-          Create Task
+          Update Task
         </Button>
       </form>
     </Form>
   );
 };
 
-export default TaskForm;
+export default EditTaskForm;
