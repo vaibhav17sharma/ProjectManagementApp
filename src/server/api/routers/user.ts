@@ -1,3 +1,4 @@
+import { compare, hash } from "bcryptjs";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -23,12 +24,46 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+  updatePassword: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        currentPassword: z.string(),
+        newPassword: z.string(),
+        confirmPassword: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!user) {
+        throw new Error("User not found");
+      } 
+
+      const isPasswordCorrect = await compare(input.currentPassword ?? "", user.password ?? "");
+      if (!isPasswordCorrect) {
+        throw new Error("Current password is incorrect");
+      }
+
+      const hashedPassword = await hash(input.newPassword ?? "", 10);
+      return ctx.db.user.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
+    }),
   updateUser: protectedProcedure
     .input(
       z.object({
         id: z.string(),
         name: z.string(),
-        email: z.string(),
         image: z.string(),
       }),
     )
@@ -39,27 +74,7 @@ export const userRouter = createTRPCRouter({
         },
         data: {
           name: input.name,
-          email: input.email,
           image: input.image,
-        },
-      });
-    }),
-  newUser: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        email: z.string(),
-        image: z.string(),
-        password: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.user.create({
-        data: {
-          name: input.name,
-          email: input.email,
-          image: input.image,
-          password: input.password,
         },
       });
     }),
