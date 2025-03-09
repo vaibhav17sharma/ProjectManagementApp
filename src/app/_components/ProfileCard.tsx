@@ -11,9 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -70,7 +69,6 @@ const passwordUpdateSchema = z
   );
 
 const ProfileCard = ({ user }: { user: User }) => {
-  const [showPasswordFields, setShowPasswordFields] = useState(false);
 
   const formDetails = useForm({
     resolver: zodResolver(userDetailsSchema),
@@ -94,25 +92,37 @@ const ProfileCard = ({ user }: { user: User }) => {
   const { mutate: updateUserDetails } = api.user.updateUser.useMutation();
   const { mutate: updatePassword } = api.user.updatePassword.useMutation();
 
-  const onSubmitDetails = async (data: any) => {
-    await updateUserDetails({ id: user.id, ...data });
+  const onSubmitDetails = (data: z.infer<typeof userDetailsSchema>) => {
+    updateUserDetails({ id: user.id, ...data });
     toast.success("User details updated successfully");
-    setTimeout(() => {
-      signOut();
+    void setTimeout(() => {
+      void signOut();
     }, 1000);
   };
 
-  const onSubmitPassword = async (data: any) => {
-    await updatePassword({ id: user.id, ...data });
+  const onSubmitPassword = (data: z.infer<typeof passwordUpdateSchema>) => {
+    if (!data.currentPassword || !data.newPassword || !data.confirmPassword) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+    const updatedData = {
+      id: user.id,
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+      confirmPassword: data.confirmPassword,
+    };
+  
+    updatePassword(updatedData);
     toast.success("Password updated successfully");
-    setTimeout(() => {
-      signOut();
+  
+    void setTimeout(() => {
+      void signOut();
     }, 1000);
   };
+  
 
   return (
     <div className="flex space-x-8">
-      {/* Left Section: User Details */}
       <div className="w-1/2">
         <Form {...formDetails}>
           <form onSubmit={formDetails.handleSubmit(onSubmitDetails)} className="space-y-6">
@@ -205,8 +215,6 @@ const ProfileCard = ({ user }: { user: User }) => {
           </form>
         </Form>
       </div>
-
-      {/* Right Section: Password Update */}
       <div className="w-1/2">
         <Form {...formPassword}>
           <form onSubmit={formPassword.handleSubmit(onSubmitPassword)} className="space-y-6">

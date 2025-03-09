@@ -1,4 +1,4 @@
-import { Task } from "@prisma/client";
+import { type Task } from "@prisma/client";
 
 interface TaskDetailsProps {
   task: Task;

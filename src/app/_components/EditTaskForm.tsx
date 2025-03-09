@@ -2,27 +2,27 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
 
 import { Textarea } from "@/components/ui/textarea";
@@ -33,8 +33,7 @@ import { Label, Tag } from "@prisma/client";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Task } from "./TaskCard";
-// Define Zod schema for form validation
+import { type Task } from "./TaskCard";
 const taskSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
@@ -48,10 +47,9 @@ const taskSchema = z.object({
 type TaskFormData = z.infer<typeof taskSchema>;
 
 const EditTaskForm: React.FC<{
-  open: boolean;
   setOpen: (open: boolean) => void;
   task: Task;
-}> = ({ open, setOpen, task }) => {
+}> = ({ setOpen, task }) => {
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {

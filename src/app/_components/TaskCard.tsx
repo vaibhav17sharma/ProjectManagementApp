@@ -109,7 +109,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
             <DialogTitle>Edit Task</DialogTitle>
             <DialogDescription>Edit the task details</DialogDescription>
           </DialogHeader>
-          <EditTaskForm open={open} setOpen={setOpen} task={task} />
+          <EditTaskForm setOpen={setOpen} task={task} />
         </DialogContent>
       </Dialog>
       </CardHeader>

@@ -1,6 +1,6 @@
 import ProfileCard from "@/app/_components/ProfileCard";
 import { auth } from "@/server/auth";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 export default async function ProfilePage() {

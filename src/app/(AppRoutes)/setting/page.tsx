@@ -21,9 +21,8 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 export default function SettingPage() {
@@ -41,7 +40,6 @@ export default function SettingPage() {
   };
 
   const { data: users } = api.user.getAllUsers.useQuery();
-  const { data: session } = useSession();
   const { mutate: softDeleteUser } = api.user.softDeleteUser.useMutation();
 
   const removeUser = (user: User) => {
@@ -63,7 +61,7 @@ export default function SettingPage() {
                 Add a new user to the project
               </DialogDescription>
             </DialogHeader>
-            <AddUser open={open} setOpen={setOpen} />
+            <AddUser setOpen={setOpen} />
           </DialogContent>
         </Dialog>
       </div>
@@ -109,7 +107,6 @@ export default function SettingPage() {
                           </DialogDescription>
                         </DialogHeader>
                         <EditUser
-                          open={editDialogOpen === user.id}
                           setOpen={setEditDialogOpen}
                           user={user}
                         />
@@ -163,7 +160,6 @@ export default function SettingPage() {
                           </DialogDescription>
                         </DialogHeader>
                         <EditUser 
-                          open={editDialogOpen === user.id}
                           setOpen={setEditDialogOpen}
                           user={user}
                         />

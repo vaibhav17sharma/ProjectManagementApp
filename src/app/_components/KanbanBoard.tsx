@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { SessionUser } from "@/server/auth/config";
+import { type SessionUser } from "@/server/auth/config";
 import { api } from "@/trpc/react";
 import {
   type Announcements,

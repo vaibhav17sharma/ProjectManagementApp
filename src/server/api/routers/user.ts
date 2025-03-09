@@ -78,6 +78,25 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+    newUser: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        email: z.string(),
+        image: z.string(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.create({
+        data: {
+          name: input.name,
+          email: input.email,
+          image: input.image,
+          password: input.password,
+        },
+      });
+    }),
   softDeleteUser: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {

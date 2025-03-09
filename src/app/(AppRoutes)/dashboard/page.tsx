@@ -36,7 +36,7 @@ export default function DashboardPage() {
               <DialogTitle>Add Task</DialogTitle>
               <DialogDescription>Add Task details here</DialogDescription>
             </DialogHeader>
-            <TaskForm open={open} setOpen={setOpen} />
+            <TaskForm setOpen={setOpen} />
           </DialogContent>
         </Dialog>
       </div>

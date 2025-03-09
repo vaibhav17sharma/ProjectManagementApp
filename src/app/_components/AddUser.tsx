@@ -34,9 +34,8 @@ const userSchema = z.object({
 type UserFormData = z.infer<typeof userSchema>;
 
 const AddUser: React.FC<{
-  open: boolean;
   setOpen: (open: boolean) => void;
-}> = ({ open, setOpen }) => {
+}> = ({ setOpen }) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     defaultValues: {

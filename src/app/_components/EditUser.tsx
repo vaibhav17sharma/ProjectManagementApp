@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User, UserRole } from "@prisma/client";
+import { type User, UserRole } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -34,11 +34,9 @@ type UserFormData = z.infer<typeof userSchema>;
 
 
 export default function EditUser({
-  open,
   setOpen,
   user,
 }: {
-  open: boolean;
   setOpen: (open: string | null) => void;
   user: User;
 }) {

@@ -47,7 +47,7 @@ const taskSchema = z.object({
 
 type TaskFormData = z.infer<typeof taskSchema>;
 
-const TaskForm: React.FC<{ open: boolean; setOpen: (open: boolean) => void }> = ({ open, setOpen }) => {
+const TaskForm: React.FC<{ setOpen: (open: boolean) => void }> = ({ setOpen }) => {
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
