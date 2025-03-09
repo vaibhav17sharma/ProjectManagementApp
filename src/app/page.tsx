@@ -44,6 +44,7 @@ export default async function Home() {
           </Button>
           </div>
         </div>
+          <pre>{JSON.stringify(session?.user, null, 2)}</pre>  
       </main>
     </HydrateClient>
   );

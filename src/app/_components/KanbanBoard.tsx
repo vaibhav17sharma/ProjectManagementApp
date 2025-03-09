@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { SessionUser } from "@/server/auth/config";
 import { api } from "@/trpc/react";
 import {
   type Announcements,
@@ -36,8 +37,8 @@ const defaultCols = [
 
 export type ColumnId = (typeof defaultCols)[number]["id"];
 
-export function KanbanBoard() {
-  const { data: initialTasks } = api.task.getAll.useQuery();
+export function KanbanBoard({user}: {user: SessionUser}) {
+  const { data: initialTasks } = user.role === 'EMPLOYEE' ? api.task.getTaskforUser.useQuery() : api.task.getAll.useQuery();
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   const pickedUpTaskColumn = useRef<ColumnId | null>(null);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);

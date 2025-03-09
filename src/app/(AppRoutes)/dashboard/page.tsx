@@ -10,10 +10,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { type SessionUser } from "@/server/auth/config";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+
+  if (!session) {
+    redirect('/');
+  }
 
   return (
     <div className="mt-3 flex flex-col items-center justify-center gap-3">
@@ -28,12 +36,12 @@ export default function DashboardPage() {
               <DialogTitle>Add Task</DialogTitle>
               <DialogDescription>Add Task details here</DialogDescription>
             </DialogHeader>
-            <TaskForm />
+            <TaskForm open={open} setOpen={setOpen} />
           </DialogContent>
         </Dialog>
       </div>
       <div className="w-full">
-        <KanbanBoard />
+        <KanbanBoard user={session?.user as SessionUser} />
       </div>
     </div>
   );

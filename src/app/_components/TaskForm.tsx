@@ -47,7 +47,7 @@ const taskSchema = z.object({
 
 type TaskFormData = z.infer<typeof taskSchema>;
 
-const TaskForm: React.FC = () => {
+const TaskForm: React.FC<{ open: boolean; setOpen: (open: boolean) => void }> = ({ open, setOpen }) => {
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
@@ -64,6 +64,7 @@ const TaskForm: React.FC = () => {
   const { data: users } = api.user.getAllUsers.useQuery();
   const onSubmit = async (data: TaskFormData) => {
     createTask(data);
+    setOpen(false);
   };
 
   return (
