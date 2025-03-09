@@ -14,6 +14,8 @@ export default {
         environment: {
           DATABASE_URL: process.env.DATABASE_URL!,
           AUTH_SECRET: process.env.AUTH_SECRET!,
+          NEXT_AUTH_URL: process.env.NEXT_AUTH_URL!,
+          ADMINS: process.env.ADMINS!,
         }, 
         customDomain: {
           domainName: "taskmanagement.vaibdev.com",
