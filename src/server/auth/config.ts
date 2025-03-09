@@ -18,12 +18,13 @@ export interface SessionUser {
 interface Token extends JWT {
   uid: string;
   jwtToken: string;
+  role: string;
 }
 
-interface User {
+interface User extends SessionUser {
   id: string;
   name: string;
-  email: string | null;
+  email: string;
   role: string;
   token: string;
   image: string;
@@ -65,7 +66,7 @@ export const authConfig: NextAuthConfig = {
           if (!credentials.username || !credentials.password) return null;
           const userDb = await db.user.findFirst({
             where: { email: credentials.username },
-            select: { password: true, id: true, name: true, role: true, email: true, image: true },
+            select: { password: true, id: true, name: true, email: true, image: true ,role: true},
           });
 
           if (userDb?.password) {
@@ -84,15 +85,14 @@ export const authConfig: NextAuthConfig = {
                 data: {
                   sessionToken: jwt,
                   userId: userDb.id,
-                  expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 year
+                  expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 },
               });
             });
-
             return {
               id: userDb.id,
               name: userDb.name,
-              role: userDb.role ?? 'EMPLOYEE',
+              role: userDb.role,
               email: userDb.email,
               token: jwt,
               image: userDb.image ?? '',
@@ -116,20 +116,21 @@ export const authConfig: NextAuthConfig = {
           name: session.user?.name ?? '',
           image: session.user?.image ?? '',
           jwtToken: (token as Token).jwtToken,
-          role: process.env.ADMINS?.split(',').includes(session.user?.email ?? '') ? 'ADMIN' : 'EMPLOYEE',
+          role: (token as Token).role,
         };
         session.user = updatedUser;
-      }
+      } 
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         (token as Token).uid = user.id ?? '';
         (token as Token).jwtToken = (user as User).token;
+        (token as Token).role = user.role;
       }
       return token;
     },
-  },
+  },  
   pages: {
     signIn: "/signin",
   },
